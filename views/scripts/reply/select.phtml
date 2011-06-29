@@ -1,0 +1,12 @@
+<?php echo $this->formSelect('forum-order', $this->order, null, array('' => $this->translate('Show hierarchical'),
+                                                                      'ASC' => $this->translate('Show past first'),
+                                                                      'DESC' => $this->translate('Show news first')))?>
+<script type="text/javascript">
+    $('#forum-order').change(function(){
+        if (this.value) {
+            $(this).parents('.content').load('forum/reply/time/order/' + this.value + '/id/' + '<?php echo $this->parent->id?>');
+        } else {
+            $(this).parents('.content').load('forum/reply/index/id/' + '<?php echo $this->parent->id?>');
+        }
+    });
+</script>

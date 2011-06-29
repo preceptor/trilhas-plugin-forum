@@ -1,0 +1,137 @@
+<div class="right">
+    <?php
+        if ($this->parent->status == 'active') {
+            if ($this->subscribe) {
+                echo $this->ajax('Not receive by email', 'forum/subscribe/out/id/' . $this->parent->id, 2);
+            } else {
+                echo $this->ajax('Receive by email', 'forum/subscribe/in/id/' . $this->parent->id, 2);
+            }
+        }
+
+        if ($this->quantity < 999999) {
+            echo $this->ajax('View all', 'forum/reply/time/quantity/-1/id/' . $this->parent->id . '/order/' . $this->order, 2);
+        }
+
+        echo $this->ajax('back', 'forum/index', 2);
+    ?>
+</div>
+<?php echo $this->partial('reply/select.phtml', array('order' => $this->order, 'parent' => $this->parent)); ?>
+<div class="forum">
+    <h3><?php echo $this->parent->title;?></h3>
+    <div id="forum-page">
+        <?php echo $this->paginationControl($this->data); ?>
+    </div>
+    <br />
+    <table class="datatable">
+        <?php $table = new Tri_Db_Table('user');?>
+        <?php $user = $table->fetchRow(array('id = ?' => $this->parent->user_id));?>
+        <tr class="space current"><td colspan="3">&nbsp;</td></tr>
+        <tr class="info current">
+            <td class="image" rowspan="2" width="60" valign="top" align="center">
+                <img alt="<?php echo $user->name ?>" src="upload/<?php echo $this->thumbnail($user->image, 'small') ?>" /><br />
+            </td>
+            <td valign="top">
+                <span class="name"><?php echo $user->name;?></span><br />
+            </td>
+            <td  align="right">
+                <span class="name"><?php echo $this->date($this->parent->created, true)?></span>
+            </td>
+        </tr>
+        <tr class="description current">
+            <td colspan="2">
+                <?php
+                    $show = 'none';
+                    $button = null;
+                    if ($this->page == 1 || $this->data->getPages()->pageCount == 0) {
+                        $show = null;
+                        $button = 'none';
+                    }
+                ?>
+                <div class="<?php echo $button;?>">
+                    <a href="#" class="showContent">Mostrar</a>
+                </div>
+                <div class="first <?php echo $show;?>">
+                    <?php echo nl2br($this->parent->description)?>
+                </div>
+            </td>
+        </tr>
+        <?php $identity = Zend_Auth::getInstance()->getIdentity()?>
+        <?php if (count($this->data)):?>
+            <?php foreach ($this->data as $key => $data): ?>
+                <?php
+                    $highlight = null;
+                    if ($data->role != 'student') {
+                        $highlight = "highlight";
+                    }
+                ?>
+                <tr class="space <?php echo $highlight?>"><td colspan="3">&nbsp;</td></tr>
+                <tr class="info <?php echo $highlight?>">
+                    <td class="image" rowspan="2" width="60" valign="top" align="center">
+                        <img alt="<?php echo $data->name ?>" src="upload/<?php echo $this->thumbnail($data->image, 'small') ?>" /><br />
+                    </td>
+                    <td>
+                        <span class="name">
+                            <?php echo $data->name;?>
+                            <?php if ($data->role != 'student'):?>
+                                (<?php echo $this->translate($data->role)?>)
+                            <?php endif;?>
+                        </span><br />
+                    </td>
+                    <td nowrap="nowrap" align="right">
+                        <?php
+                            if ($this->parent->status == 'active') {
+                                if ($this->isAllowed('form') && $identity->id == $data->user_id) {
+                                    echo $this->ajax("edit", 'forum/reply/form/id/'. $data->id) . '&nbsp;&nbsp;';
+                                }
+
+                                if (($this->isAllowed('delete') && $identity->id == $data->user_id) || $identity->role != 'student') {
+                                    echo $this->ajax("delete", 'forum/reply/delete/id/' . $data->id . '/forumId/' . $data->forum_id, 1, "want to delete?");
+                                }
+                            }
+                        ?>
+                        <span class="name"><?php echo $this->date($data->created, true)?></span>
+                    </td>
+                </tr>
+                <tr class="description <?php echo $highlight?>">
+                    <td colspan="2">
+                        <?php echo nl2br($data->description);?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        <?php endif;?>
+        <?php if ($this->parent->status == 'active'):?>
+            <tr class="current space <?php echo $highlight?>"><td colspan="3">&nbsp;</td></tr>
+            <tr class="current">
+                <td width="60" valign="top" align="center" class="image">
+                    <img alt="<?php echo $identity->name ?>" src="upload/<?php echo $this->thumbnail($identity->image, 'small') ?>" /><br />
+                </td>
+                <td colspan="2" valign="top"><div class="forumReply"><?php echo $this->form?></div></td>
+            </tr>
+        <?php endif;?>
+    </table>
+    <div id="forum-page">
+        <?php echo $this->paginationControl($this->data) ?>
+    </div>
+</div>
+<script type="text/javascript">
+    $('#forum-page a').click(function(){
+        $(this).parents('.content').load(this.href);
+        return false;
+    });
+
+    $(".forumReply form").submit(function() {
+        var $this = $(this);
+		$.post('forum/reply/save', $(this).serialize(), function(data){
+            $this.parents('.content').html(data);
+        });
+        return false;
+	});
+
+    $('.forum .showContent').click(function(){
+        $('.forum .description .first').show();
+        $(this).remove();
+        return false;
+    });
+
+    $('input[type=button], input[type=submit]').button();
+</script>

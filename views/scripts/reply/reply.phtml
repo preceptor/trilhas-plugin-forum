@@ -1,0 +1,63 @@
+<?php
+    $identity = Zend_Auth::getInstance()->getIdentity();
+    $highlight = null;
+    if ($this->data->role != 'student') {
+        $highlight = "highlight";
+    }
+    $margin = $this->margin * 10;
+?>
+<div class="padding partial-reply <?php echo $highlight?>" style="margin-left: <?php echo $margin;?>px;">
+<table class="datatable">
+    <tr class="info <?php echo $highlight?>">
+        <td class="image" rowspan="2" width="40" valign="top" align="center">
+            <img alt="<?php echo $this->data->name ?>" src="upload/<?php echo $this->thumbnail($this->data->image, 'small') ?>" /><br />
+        </td>
+        <td>
+            <span class="name">
+                <?php echo $this->data->name;?>
+                <?php if ($this->data->role != 'student'):?>
+                    (<?php echo $this->translate($this->data->role)?>)
+                <?php endif;?>
+            </span><br />
+        </td>
+        <td nowrap="nowrap" align="right">
+            <?php
+                if ($this->parent->status == 'active') {
+                    if ($this->isAllowed('form') && $identity->id == $this->data->user_id) {
+                        echo $this->ajax("edit", 'forum/reply/form/id/'. $this->data->id) . '&nbsp;&nbsp;';
+                    }
+
+                    if (($this->isAllowed('delete') && $identity->id == $this->data->user_id) || $identity->role != 'student') {
+                        echo $this->ajax("delete", 'forum/reply/delete/id/' . $this->data->id . '/forumId/' . $this->data->forum_id, 1, "want to delete?");
+                    }
+                }
+            ?>
+            <span class="name"><?php echo $this->date($this->data->created, true)?></span>
+        </td>
+    </tr>
+    <tr class="description <?php echo $highlight?>">
+        <td>
+            <?php echo nl2br($this->data->description);?>
+        </td>
+        <td align="right" valign="bottom">
+            <?php if ($this->parent->status == 'active'):?>
+                <a href="#" id="forum_reply_<?php echo $this->data->id?>" class="reply"><?php echo $this->translate('reply')?></a>
+            <?php endif?>
+        </td>
+    </tr>
+</table>
+</div>
+<?php
+    $reply = new Tri_Db_Table('forum_reply');
+    $select = $reply->select(true)
+                    ->setIntegrityCheck(false)
+                    ->join('user', 'user.id = user_id', array('user.id as uid','user.name','user.image','user.role'))
+                    ->where('forum_reply_id = ?', $this->data->id)
+                    ->order('id');
+    $data = $reply->fetchAll($select);
+    if (count($data)) {
+        foreach ($data as $value) {
+            echo $this->partial('reply/reply.phtml', array('data' => $value, 'parent' => $this->parent, 'margin' => $this->margin+1 ));
+        }
+    }
+?>

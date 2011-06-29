@@ -1,0 +1,105 @@
+<div class="right">
+    <?php
+        if ($this->parent->status == 'active') {
+            if ($this->subscribe) {
+                echo $this->ajax('Not receive by email', 'forum/subscribe/out/id/' . $this->parent->id, 2);
+            } else {
+                echo $this->ajax('Receive by email', 'forum/subscribe/in/id/' . $this->parent->id, 2);
+            }
+        }
+
+        echo $this->ajax('back', 'forum/index', 2);
+    ?>
+</div>
+<?php echo $this->partial('reply/select.phtml', array('order' => $this->order, 'parent' => $this->parent)); ?>
+<div class="forum">
+    <br /><br />
+    <h3><?php echo $this->parent->title;?></h3>
+    <div style="background: #F4F4F4;" class="padding">
+        <table class="datatable">
+            <?php $table = new Tri_Db_Table('user');?>
+            <?php $user = $table->fetchRow(array('id = ?' => $this->parent->user_id));?>
+            <tr class="info current">
+                <td class="image" rowspan="2" width="60" valign="top" align="center">
+                    <img alt="<?php echo $user->name ?>" src="upload/<?php echo $this->thumbnail($user->image, 'small') ?>" /><br />
+                </td>
+                <td valign="top">
+                    <span class="name"><?php echo $user->name;?></span><br />
+                </td>
+                <td  align="right" nowrap="nowrap">
+                    <span class="name"><?php echo $this->date($this->parent->created, true)?></span>
+                </td>
+            </tr>
+            <tr class="description current">
+                <td>
+                    <div class="first">
+                        <?php echo nl2br($this->parent->description)?>
+                    </div>
+                </td>
+                <td align="right" valign="bottom">
+                    <?php if ($this->parent->status == 'active'):?>
+                        <a href="#" class="reply"><?php echo $this->translate('reply')?></a>
+                    <?php endif;?>
+                </td>
+            </tr>
+        </table>
+    </div>    
+    <?php if (count($this->data)):?>
+        <?php foreach ($this->data as $key => $data): ?>
+            <?php echo $this->partial('reply/reply.phtml', array('data' => $data, 'parent' => $this->parent, 'margin' => 1))?>
+        <?php endforeach;?>
+    <?php endif;?>
+    <div style="display: none;" class="forum-reply padding partial-reply">
+            <a class="right forum-reply-close" href="#"><?php echo $this->translate('close')?></a>
+        <?php echo $this->form?>
+    </div>
+</div>
+<script type="text/javascript">
+    $('#forum-page a').click(function(){
+        $(this).parents('.content').load(this.href);
+        return false;
+    });
+    
+    $('.forum .reply').click(function(){
+        var $reply = $('.forum-reply:last').clone(),
+            $this = $(this),
+            $parent = $this.parents('table').parent(),
+            margin = parseInt($parent.css('margin-left'), 10);
+            id = this.id.replace('forum_reply_', '');
+        
+        $this.hide();
+        
+        if (!margin) {
+            margin = 0;
+        }
+        
+        $reply.show();
+        $reply.find('input[name=forum_reply_id]').val(id);
+        $reply.css('margin-left', margin+10);
+        $parent.after($reply);
+        
+        return false;
+    });
+
+    $(".forum-reply .forum-reply-close").live('click', function() {
+        $('.forum .reply').show();
+        $(this).parent().remove();
+        return false;
+	});
+    
+    $(".forum-reply form").live('submit', function() {
+        var $this = $(this);
+		$.post('forum/reply/save', $(this).serialize(), function(data){
+            $this.parents('.content').html(data);
+        });
+        return false;
+	});
+
+    $('.forum .showContent').click(function(){
+        $('.forum .description .first').show();
+        $(this).remove();
+        return false;
+    });
+
+    $('input[type=button], input[type=submit]').button();
+</script>

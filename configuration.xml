@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <name>Forum</name>
+    <description>Discussion forum</description>
+    <author>Preceptor Educação a Distância</author>
+    <version>1.0</version>
+    <license>GPL 3</license>
+    <keywords>forum, discussion</keywords>
+    <url>http://www.preceptoread.com.br</url>
+    
+    <files>
+        <sql>
+            <install>data/sql/install.sql</install>
+            <uninstall>data/sql/uninstall.sql</uninstall>
+        </sql>
+        <languages>
+            <language name="pt_BR">data/language/pt_BR/forum.csv</language>
+        </languages>
+    </files>
+    
+    <menus>
+        <menu type="tri_classroom_menu">
+            <item group="communication" resource="forum/index/index">forum</item>    
+        </menu>
+    </menus>
+    
+    <access>
+        <resource role="identified">forum/index/index</resource>
+        <resource role="teacher">forum/index/form</resource>
+        <resource role="teacher">forum/index/save</resource>
+        <resource role="teacher">forum/index/view</resource>
+        <resource role="identified">forum/reply/index</resource>
+        <resource role="identified">forum/reply/form</resource>
+        <resource role="identified">forum/reply/save</resource>
+        <resource role="identified">forum/reply/find</resource>
+        <resource role="identified">forum/reply/time</resource>
+        <resource role="identified">forum/reply/delete</resource>
+        <resource role="identified">forum/subscribe/in</resource>
+        <resource role="identified">forum/subscribe/out</resource>
+    </access>
+</configuration>

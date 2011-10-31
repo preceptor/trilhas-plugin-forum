@@ -45,7 +45,7 @@ class Forum_ReplyController extends Tri_Controller_Action
         $subscribe = new Tri_Db_Table('forum_subscribe');
         $page      = Zend_Filter::filterStatic($this->_getParam('page'), 'int');
         $id        = Zend_Filter::filterStatic($this->_getParam('id'), 'int');
-        $quantity  = Zend_Filter::filterStatic($this->_getParam('quantity'), 'int');
+        $quantity  = Zend_Filter::filterStatic($this->_getParam('quantity', 10), 'int');
         $order     = Zend_Filter::filterStatic($this->_getParam('order', 'ASC'), 'alpha');
         $form      = new Forum_Form_Reply();
         $identity  = Zend_Auth::getInstance()->getIdentity();

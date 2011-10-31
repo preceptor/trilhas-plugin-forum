@@ -7,7 +7,7 @@
                 echo $this->ajax('Receive by email', 'forum/subscribe/in/id/' . $this->parent->id, 2);
             }
         }
-
+        echo "&nbsp;";
         echo $this->ajax('back', 'forum/index', 2);
     ?>
 </div>
@@ -16,7 +16,7 @@
     <br /><br />
     <h3><?php echo $this->parent->title;?></h3>
     <div style="background: #F4F4F4;" class="padding">
-        <table class="datatable">
+        <table>
             <?php $table = new Tri_Db_Table('user');?>
             <?php $user = $table->fetchRow(array('id = ?' => $this->parent->user_id));?>
             <tr class="info current">
@@ -31,14 +31,14 @@
                 </td>
             </tr>
             <tr class="description current">
-                <td>
+                <td colspan="2">
                     <div class="first">
                         <?php echo nl2br($this->parent->description)?>
                     </div>
-                </td>
-                <td align="right" valign="bottom">
                     <?php if ($this->parent->status == 'active'):?>
-                        <a href="#" class="reply"><?php echo $this->translate('reply')?></a>
+                        <div class="aright">
+                            <a href="#" id="forum_reply_<?php echo $this->data->id?>" class="reply btn"><?php echo $this->translate('reply')?></a>
+                        </div>
                     <?php endif;?>
                 </td>
             </tr>
@@ -101,5 +101,5 @@
         return false;
     });
 
-    $('input[type=button], input[type=submit]').button();
+    
 </script>

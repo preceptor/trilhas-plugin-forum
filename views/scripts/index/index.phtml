@@ -1,18 +1,17 @@
 <div class="left">
     <form id="formFindForum" action="#">
-        <span class="ui-icon ui-icon-search magnifier"></span>
         <input type="text" name="query" style="width: 16em" />
-        <input type="submit" value="ok" /> &nbsp;&nbsp;&nbsp;
+        <input class="btn" type="submit" value="ok" /> &nbsp;&nbsp;&nbsp;
     </form>
 </div>
 <?php if($this->isAllowed('form')): ?>	
-	<div class="aright"><?php echo $this->ajax("new", 'forum/index/form/', 2); ?></div>
+	<div class="aright"><?php echo $this->ajax("new", 'forum/index/form/', 3); ?></div>
 <?php endif; ?>	
 <?php if (count($this->data)):?>
     <br />
-    <table class="datatable">
+    <table class="zebra-striped">
         <tr>
-            <th></th>
+            <th><?php echo $this->translate('Name')?></th>
             <th><?php echo $this->translate('Comments')?></th>
             <th><?php echo $this->translate('Status')?></th>
             <th></th>
@@ -35,7 +34,7 @@
                 </td>
                 <td width="40">
                     <?php if ($this->isAllowed('form')): ?>
-                        <?php echo $this->ajax("edit", 'forum/index/form/id/'. $data->id); ?>
+                        <?php echo $this->ajax("edit", 'forum/index/form/id/'. $data->id, 2); ?>
                     <?php endif;?>
                 </td>
             </tr>
@@ -58,5 +57,5 @@
         return false;
 	});
 
-    $('input[type=button], input[type=submit]').button();
+    
 </script>

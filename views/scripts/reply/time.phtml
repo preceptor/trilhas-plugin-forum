@@ -9,9 +9,11 @@
         }
 
         if ($this->quantity < 999999) {
+            echo "&nbsp;";
             echo $this->ajax('View all', 'forum/reply/time/quantity/-1/id/' . $this->parent->id . '/order/' . $this->order, 2);
         }
-
+        
+        echo "&nbsp;";
         echo $this->ajax('back', 'forum/index', 2);
     ?>
 </div>
@@ -22,7 +24,7 @@
         <?php echo $this->paginationControl($this->data); ?>
     </div>
     <br />
-    <table class="datatable">
+    <table>
         <?php $table = new Tri_Db_Table('user');?>
         <?php $user = $table->fetchRow(array('id = ?' => $this->parent->user_id));?>
         <tr class="space current"><td colspan="3">&nbsp;</td></tr>
@@ -42,7 +44,7 @@
                 <?php
                     $show = 'none';
                     $button = null;
-                    if ($this->page == 1 || $this->data->getPages()->pageCount == 0) {
+                    if ($this->page <= 1 || $this->data->getPages()->pageCount == 1) {
                         $show = null;
                         $button = 'none';
                     }
@@ -133,5 +135,5 @@
         return false;
     });
 
-    $('input[type=button], input[type=submit]').button();
+    
 </script>

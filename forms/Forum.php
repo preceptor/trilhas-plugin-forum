@@ -58,6 +58,7 @@ class Forum_Form_Forum extends Zend_Form
                     ->addValidators($validators['description'])
                     ->addFilters($filters['description'])
                     ->setAttrib('rows', 10)
+                    ->setAttrib('class', 'xxlarge')
                     ->setAllowEmpty(false);
 
         $status  = new Zend_Form_Element_Select('status');
@@ -66,7 +67,7 @@ class Forum_Form_Forum extends Zend_Form
 
         $begin = new Zend_Form_Element_Text('begin');
         $begin->setLabel('Begin')
-              ->setAttrib('class', 'date')
+              ->setAttrib('class', 'date small')
               ->addFilters($filters['begin'])
               ->addValidators($validators['begin'])
               ->setAllowEmpty(false)
@@ -74,7 +75,7 @@ class Forum_Form_Forum extends Zend_Form
 
         $end = new Zend_Form_Element_Text('end');
         $end->setLabel('End')
-            ->setAttrib('class', 'date')
+            ->setAttrib('class', 'date small')
             ->addFilters($filters['end'])
             ->getPluginLoader('filter')->addPrefixPath('Tri_Filter', 'Tri/Filter');
 
@@ -88,6 +89,6 @@ class Forum_Form_Forum extends Zend_Form
              ->addElement($status)
              ->addElement($begin)
              ->addElement($end)
-             ->addElement('submit', 'Save');
+             ->addElement('submit', 'Save', array('class' => 'btn primary'));
    }
 }

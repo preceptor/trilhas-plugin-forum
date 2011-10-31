@@ -62,13 +62,13 @@ class Forum_Form_Reply extends Zend_Form
                     ->addValidators($validators['description'])
                     ->addFilters($filters['description'])
                     ->setAttrib('rows', 6)
-                    ->setAttrib('cols', 60)
+                    ->setAttrib('class', 'xxlarge')
                     ->setAllowEmpty(false);
 
         $this->addElement($id)
              ->addElement($forumId)
              ->addElement($forumReplyId)
              ->addElement($description)
-             ->addElement('submit', 'Post');
+             ->addElement('submit', 'Post', array('class' => 'btn primary'));
    }
 }

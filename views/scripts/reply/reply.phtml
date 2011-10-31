@@ -7,7 +7,7 @@
     $margin = $this->margin * 10;
 ?>
 <div class="padding partial-reply <?php echo $highlight?>" style="margin-left: <?php echo $margin;?>px;">
-<table class="datatable">
+<table class="zebra-striped">
     <tr class="info <?php echo $highlight?>">
         <td class="image" rowspan="2" width="40" valign="top" align="center">
             <img alt="<?php echo $this->data->name ?>" src="upload/<?php echo $this->thumbnail($this->data->image, 'small') ?>" /><br />
@@ -36,12 +36,12 @@
         </td>
     </tr>
     <tr class="description <?php echo $highlight?>">
-        <td>
+        <td colspan="2">
             <?php echo nl2br($this->data->description);?>
-        </td>
-        <td align="right" valign="bottom">
             <?php if ($this->parent->status == 'active'):?>
-                <a href="#" id="forum_reply_<?php echo $this->data->id?>" class="reply"><?php echo $this->translate('reply')?></a>
+                <div class="aright">
+                    <a href="#" id="forum_reply_<?php echo $this->data->id?>" class="reply btn"><?php echo $this->translate('reply')?></a>
+                </div>
             <?php endif?>
         </td>
     </tr>
